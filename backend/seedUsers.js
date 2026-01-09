@@ -6,19 +6,19 @@ const User = require("./models/User");
 
 const users = [
   {
-    name: "Admin",
+    name: "admin",
     email: "admin@bloodbond.com",
     password: "admin123",
     role: "admin",
   },
   {
-    name: "City Blood Bank",
+    name: "Blood Bank",
     email: "bloodbank@bloodbond.com",
     password: "bloodbank123",
     role: "bloodbank",
   },
   {
-    name: "Demo User",
+    name: "User",
     email: "user@bloodbond.com",
     password: "user123",
     role: "user",
