@@ -6,7 +6,7 @@ const User = require("./models/User");
 
 const users = [
   {
-    name: "admin",
+    name: "Admin",
     email: "admin@bloodbond.com",
     password: "admin123",
     role: "admin",
@@ -28,12 +28,12 @@ const users = [
 async function seed() {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    console.log("MongoDB connected");
+    console.log("MongoDB Atlas connected");
 
-    for (let u of users) {
+    for (const u of users) {
       const exists = await User.findOne({ email: u.email });
       if (exists) {
-        console.log(`${u.email} already exists`);
+        console.log(`Skipping existing: ${u.email}`);
         continue;
       }
 
@@ -49,9 +49,10 @@ async function seed() {
       console.log(`Created ${u.role}: ${u.email}`);
     }
 
-    process.exit();
+    console.log("Seeding complete");
+    process.exit(0);
   } catch (err) {
-    console.error(err);
+    console.error("SEED ERROR:", err);
     process.exit(1);
   }
 }
