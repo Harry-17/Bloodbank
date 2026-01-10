@@ -1,10 +1,15 @@
 import api from "./api";
 
 export const loginUser = async (data) => {
-  const res = await api.post("/auth/login", data);
-  return res.data;
+  try {
+    const res = await api.post("/auth/login", data);
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Login failed" };
+  }
 };
 
 export const logoutUser = () => {
-  localStorage.clear();
+  localStorage.removeItem("token");
+  localStorage.removeItem("role");
 };

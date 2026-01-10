@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { loginUser } from "../services/auth";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -9,6 +9,18 @@ function Login() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  // 🔐 Redirect logged-in users away from /login
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
+    if (token && role) {
+      if (role === "admin") navigate("/admin", { replace: true });
+      else if (role === "bloodbank") navigate("/bloodbank", { replace: true });
+      else navigate("/user", { replace: true });
+    }
+  }, [navigate]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -21,9 +33,11 @@ function Login() {
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.role);
 
-      if (data.role === "admin") navigate("/admin");
-      else if (data.role === "bloodbank") navigate("/bloodbank");
-      else navigate("/user");
+      // ✅ Use replace to remove /login from history
+      if (data.role === "admin") navigate("/admin", { replace: true });
+      else if (data.role === "bloodbank")
+        navigate("/bloodbank", { replace: true });
+      else navigate("/user", { replace: true });
     } catch (err) {
       setError("Invalid email or password");
     } finally {
@@ -31,25 +45,25 @@ function Login() {
     }
   };
 
-  // 🔹 Demo autofill handler
+  // 🎯 Demo autofill (matches seeded DB users)
   const fillDemo = (role) => {
     if (role === "admin") {
-      setEmail("admin@bloodbond.com");
+      setEmail("admin@demo.com");
       setPassword("admin123");
     }
     if (role === "bloodbank") {
-      setEmail("bloodbank@bloodbond.com");
-      setPassword("bloodbank123");
+      setEmail("bank@demo.com");
+      setPassword("bank123");
     }
     if (role === "user") {
-      setEmail("user@bloodbond.com");
+      setEmail("user@demo.com");
       setPassword("user123");
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 to-white flex items-center justify-center px-4">
-      <div className="bg-white shadow-xl rounded-2xl w-full max-w-md p-8 animate-fade-in">
+      <div className="bg-white shadow-xl rounded-2xl w-full max-w-md p-8">
 
         {/* Back to Home */}
         <Link
@@ -77,9 +91,7 @@ function Login() {
         {/* Login Form */}
         <form onSubmit={submitHandler} className="mt-6 space-y-4">
           <div>
-            <label className="text-sm font-medium text-gray-600">
-              Email
-            </label>
+            <label className="text-sm font-medium text-gray-600">Email</label>
             <input
               type="email"
               placeholder="you@example.com"
@@ -122,22 +134,22 @@ function Login() {
           <div className="space-y-3 text-sm">
             <DemoRow
               label="Admin"
-              email="admin@bloodbond.com"
+              email="admin@demo.com"
               password="admin123"
               onClick={() => fillDemo("admin")}
             />
 
             <DemoRow
               label="Blood Bank"
-              email="bloodbank@bloodbond.com"
-              password="bloodbank123"
+              email="bank@demo.com"
+              password="bank123"
               onClick={() => fillDemo("bloodbank")}
             />
 
             <DemoRow
               label="User"
-              email="user@bloodbond.com"
-              password="sser123"
+              email="user@demo.com"
+              password="user123"
               onClick={() => fillDemo("user")}
             />
           </div>

@@ -11,7 +11,7 @@ router.post("/stock", auth("bloodbank"), async (req, res) => {
   let stock = await BloodStock.findOne({ bloodGroup });
 
   if (stock) {
-    stock.units = units;
+    stock.units += units;
     stock.updatedBy = req.user.id;
     await stock.save();
   } else {

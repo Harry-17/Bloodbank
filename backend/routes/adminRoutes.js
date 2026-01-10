@@ -37,9 +37,14 @@ router.get("/requests", auth("admin"), async (req, res) => {
 // ✅ Admin: approve request
 router.post("/approve/:id", auth("admin"), async (req, res) => {
   const request = await BloodRequest.findById(req.params.id);
+  if (!request) {
+    return res.status(404).json({ message: "Request not found" });
+  }
+
   request.status = "approved";
   await request.save();
   res.json({ message: "Approved" });
 });
+
 
 module.exports = router;
